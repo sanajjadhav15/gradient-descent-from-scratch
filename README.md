@@ -6,6 +6,7 @@
 ![NumPy](https://img.shields.io/badge/NumPy-1.24%2B-013243?style=flat-square&logo=numpy)
 ![Matplotlib](https://img.shields.io/badge/Matplotlib-3.7%2B-11557c?style=flat-square)
 ![Jupyter](https://img.shields.io/badge/Jupyter-Notebook-orange?style=flat-square&logo=jupyter)
+![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)
 
 ---
 
@@ -13,7 +14,7 @@
 
 This project is a hands-on, visual exploration of **Gradient Descent** — the optimization algorithm at the heart of nearly every machine learning model. Built entirely from scratch using only **NumPy** and **Matplotlib**, it strips away the abstraction layers of modern ML libraries to show you exactly what's happening under the hood.
 
-Across three progressively complex Jupyter notebooks, you'll watch gradient descent converge in real time — from minimizing a simple parabola to fitting a regression line to noisy data.
+Across four progressively complex Jupyter notebooks, you'll watch gradient descent converge in real time — from minimizing a simple parabola, to fitting a regression line, to comparing advanced optimizers side by side on an asymmetric loss surface.
 
 ### Why learn gradient descent from scratch?
 
@@ -22,7 +23,7 @@ Most ML beginners jump straight to `sklearn` or `PyTorch` without understanding 
 - Debug models that aren't converging
 - Tune learning rates with confidence
 - Build intuition for loss landscapes and optimization
-- Extend your knowledge to advanced optimizers (Adam, RMSProp, etc.)
+- Extend your knowledge to advanced optimizers (Momentum, Adam, RMSProp, etc.)
 
 ---
 
@@ -30,9 +31,10 @@ Most ML beginners jump straight to `sklearn` or `PyTorch` without understanding 
 
 - 📐 **Pure NumPy implementation** — no ML libraries, just math and arrays
 - 📊 **Rich visualizations** — step-by-step plots showing descent in action
-- 🧩 **Three levels of complexity** — 1D → 2D → real regression
+- 🧩 **Four levels of complexity** — 1D → 2D → Real Regression → Optimizer Comparison
+- 🔁 **Optimizer comparison** — Vanilla Gradient Descent vs. Momentum on the same loss surface
 - 🔰 **Beginner-friendly code** — heavily commented and easy to follow
-- 📈 **Contour plot optimization paths** — see exactly how the algorithm navigates a loss surface
+- 📈 **Contour plot optimization paths** — see exactly how each algorithm navigates a loss surface
 - 🎯 **Conceptual clarity** — each notebook pairs theory with working code
 
 ---
@@ -44,6 +46,7 @@ gradient-descent-from-scratch/
 │── 1D_gradient_descent.ipynb
 │── 2D_gradient_descent.ipynb
 │── linear_regression_gradient_descent.ipynb
+│── Optimization_Visualizer.ipynb
 │── README.md
 ```
 
@@ -78,7 +81,7 @@ gradient-descent-from-scratch/
 
 **What You'll See:**
 - A contour plot of the loss surface (concentric circles centered at the origin)
-- An animated path of the optimization trajectory converging toward `(0, 0)`
+- The optimization trajectory converging toward `(0, 0)`
 - Intuition for how the algorithm "rolls downhill" in 2D
 
 ---
@@ -99,6 +102,40 @@ gradient-descent-from-scratch/
 
 ---
 
+### 4. `Optimization_Visualizer.ipynb` — Optimizer Showdown 🆕
+
+**Purpose:** Compare **Vanilla Gradient Descent** and **Momentum-based Gradient Descent** on an asymmetric loss surface `f(x, y) = x² + 2y²`.
+
+**Key Concepts:**
+- Asymmetric loss surfaces and why they challenge standard gradient descent
+- Momentum as a technique to accelerate convergence and dampen oscillations
+- The momentum coefficient `β` (beta) and its role in accumulating velocity
+- Side-by-side visual comparison of optimizer trajectories
+
+**The Math:**
+
+Vanilla Gradient Descent:
+```
+θ = θ - η · ∇J(θ)
+```
+
+Momentum Gradient Descent:
+```
+v = β · v + ∇J(θ)
+θ = θ - η · v
+```
+
+**What You'll See:**
+- A contour plot of the elliptical loss surface `f(x, y) = x² + 2y²`
+- Two distinct optimization paths plotted simultaneously from the same starting point `(4, 4)`:
+  - 🔵 **Gradient Descent** (`lr=0.1`, 20 steps) — marked with circles
+  - 🔴 **Momentum** (`lr=0.1`, `β=0.9`, 20 steps) — marked with crosses
+- Clear visual evidence of Momentum's faster, more direct convergence on the stretched surface
+
+**Key Insight:** The asymmetry in `f(x, y) = x² + 2y²` (the `y` dimension is steeper) causes vanilla gradient descent to oscillate and slow down. Momentum accumulates velocity in the dominant direction, slicing through the ellipse more efficiently.
+
+---
+
 ## 📐 How Gradient Descent Works
 
 Gradient descent is an iterative optimization algorithm that minimizes a function by repeatedly moving in the direction of steepest descent — the **negative gradient**.
@@ -107,9 +144,7 @@ Gradient descent is an iterative optimization algorithm that minimizes a functio
 
 Imagine you're standing on a hilly landscape blindfolded. Your goal is to reach the lowest valley. At each step, you feel the slope beneath your feet and take a step in the downhill direction. Gradient descent does exactly this — but in a mathematical parameter space.
 
-### The Update Rule
-
-At each iteration, parameters are updated using:
+### The Core Update Rule
 
 $$\theta = \theta - \eta \cdot \nabla J(\theta)$$
 
@@ -124,6 +159,16 @@ Where:
 ```python
 # Core update rule in code
 theta = theta - learning_rate * gradient
+```
+
+### Momentum: Going Beyond Vanilla Gradient Descent
+
+Momentum improves upon standard gradient descent by keeping track of a velocity term that accumulates past gradients. This helps the optimizer build speed in consistent directions and reduces oscillation in narrow valleys.
+
+```python
+# Momentum update
+v = beta * v + gradient
+theta = theta - learning_rate * v
 ```
 
 ### The Role of Learning Rate
@@ -169,15 +214,19 @@ Each notebook produces clear, informative plots designed to build intuition:
 
 ### 🔵 Parabolic Descent (1D)
 
-A 2D plot of `f(x) = x²` with the current position of the algorithm marked at each step. Watch the point slide down the curve and settle at the minimum.
+A 2D plot of `f(x) = x²` with the current position marked at each step. Watch the point slide down the curve and settle at the minimum.
 
 ### 🔴 Contour Path (2D)
 
-A top-down contour map of `f(x, y) = x² + y²`, showing the optimization trajectory as a series of arrows spiraling inward toward the global minimum at the origin.
+A top-down contour map of `f(x, y) = x² + y²`, showing the optimization trajectory spiraling inward toward the global minimum.
 
 ### 🟢 Regression Line Fitting
 
-A scatter plot of data points with the learned regression line overlaid. As training progresses, you'll see the line rotate and shift until it fits the data well — visualizing learning in real time.
+A scatter plot of data points with the learned regression line overlaid. As training progresses, the line rotates and shifts until it fits the data — visualizing learning in real time.
+
+### 🟡 Optimizer Comparison (Optimization Visualizer)
+
+A single contour plot of the asymmetric surface `f(x, y) = x² + 2y²` with two overlaid trajectories — vanilla gradient descent and momentum — starting from the same point `(4, 4)` and racing to the minimum. The contrast in paths makes the advantage of momentum immediately visible.
 
 ---
 
@@ -190,19 +239,9 @@ By working through these notebooks, you will:
 - ✅ Develop visual intuition for how optimization works in 1D and 2D
 - ✅ Grasp the effect of learning rate on convergence
 - ✅ Connect gradient descent to a real problem: linear regression
+- ✅ Understand why asymmetric loss surfaces challenge standard gradient descent
+- ✅ See how Momentum accelerates convergence and reduces oscillation
 - ✅ Build the mental model needed to understand modern deep learning optimizers
-
----
-
-## 🔮 Future Improvements
-
-This project is designed to grow. Planned extensions include:
-
-- 🎞️ **Animations** — Frame-by-frame animated descent using `matplotlib.animation`
-- ⚡ **Stochastic & Mini-Batch Gradient Descent** — Introduce noise and compare convergence behaviour
-- 🧠 **Neural Network Extension** — Apply gradient descent to a simple feedforward network with backpropagation
-- 📉 **Momentum & Adam Optimizer** — Implement adaptive learning rate methods from scratch
-- 🌄 **Non-Convex Loss Surfaces** — Explore local minima, saddle points, and escaping flat regions
 
 ---
 
